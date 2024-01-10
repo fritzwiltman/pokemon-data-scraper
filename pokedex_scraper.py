@@ -216,13 +216,6 @@ def create_pokemon_variation(unparsed_name, types):
 
 
 def main():
-    # p = create_pokemon(6, "Charizard", ["Fire", "Flying"])
-    # pokemon_data = [p.to_dict()]
-
-    # # Serialize to JSON and write to a file
-    # with open('pokemon_data.json', 'w', encoding='utf-8') as f:
-    #     json.dump(pokemon_data, f, ensure_ascii=False, indent=4)
-
     pokemon_list = scrape_pokemon_data()
 
     # Print the first 5 pokemon
