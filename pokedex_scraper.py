@@ -39,7 +39,7 @@ def create_pokemon(pokedex_number, name, types):
     soup = BeautifulSoup(response.text, 'html.parser')
 
     # Get pokemon image url
-    image_url = soup.find('a', attrs=lambda attrs: attrs and 'data-title' in attrs and 'official artwork' in attrs['data-title']).find('img')['src']
+    image_url = soup.find('a', attrs={'data-title': f'{name} official artwork'}).find('img')['src']
 
     # Get pokemon height and weight
     vitals_table = soup.find('table', class_='vitals-table')
