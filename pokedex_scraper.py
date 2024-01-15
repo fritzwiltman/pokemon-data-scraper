@@ -312,12 +312,15 @@ def create_pokemon_variation(unparsed_name, types):
     elif "Castform" or "Primal" or "Forme" or "Cloak" or "Keldeo" or "Calyrex" or "Palafin" or "Tatsugiri" or "Dudunsparce" or "Gimmighoul" or "Ogerpon" or "Terapagos" in unparsed_name:
         variation_name = unparsed_name
     
+    # Calculate type weaknesses, resistances, and immunities
+    (resistances, weaknesses, immunities) = calculate_type_effectiveness(types)
+    
     variation = PokemonVariation(
         name=variation_name,
         types=types,
-        resistances=[],
-        weaknesses=[],
-        immunities=[],
+        resistances=resistances,
+        weaknesses=weaknesses,
+        immunities=immunities,
         imageUrl=""
     )
 
