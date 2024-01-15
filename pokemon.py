@@ -10,10 +10,10 @@ class Stats:
 """
 
 class PokemonVariation:
-    def __init__(self, name, types, strengths, weaknesses, immunities, imageUrl):
+    def __init__(self, name, types, resistances, weaknesses, immunities, imageUrl):
         self.name = name
         self.types = types
-        self.strengths = strengths
+        self.resistances = resistances
         self.weaknesses = weaknesses
         self.immunities = immunities
         self.imageUrl = imageUrl
@@ -22,14 +22,14 @@ class PokemonVariation:
         return {
             'name': self.name,
             'types': self.types,
-            'strengths': self.strengths,
+            'resistances': self.resistances,
             'weaknesses': self.weaknesses,
             'immunities': self.immunities,
             'imageUrl': self.imageUrl
         }
 
 class Pokemon:
-    def __init__(self, id, name, types, height, weight, category, abilities, moves, strengths, weaknesses, immunities, evolution_stage, imageUrl, legendaryStatus):
+    def __init__(self, id, name, types, height, weight, category, abilities, moves, resistances, weaknesses, immunities, evolution_stage, imageUrl, legendaryStatus):
         self.id = id
         self.name = name
         self.types = types
@@ -38,7 +38,7 @@ class Pokemon:
         self.category = category
         self.abilities = abilities
         self.moves = moves
-        self.strengths = strengths
+        self.resistances = resistances
         self.weaknesses = weaknesses
         self.immunities = immunities
         self.evolution_stage = evolution_stage # 1, 2, 3, or None to denote no evolution
@@ -59,7 +59,7 @@ class Pokemon:
             'category': self.category,
             'abilities': self.abilities,
             'moves': self.moves,
-            'strengths': self.strengths,
+            'resistances': self.resistances,
             'weaknesses': self.weaknesses,
             'immunities': self.immunities,
             'evolutionStage': self.evolution_stage,
@@ -111,31 +111,24 @@ LEGENDARY_AND_MYTHICAL_POKEMON = [
     "Zarude"
 ]
 
-# Usage Example
-charizard = Pokemon(
-    id=6,
-    name="Charizard",
-    types=["Fire", "Flying"],
-    height="1.7 m",
-    weight="90.5 kg",
-    category="Flame Pokémon",
-    abilities=["Blaze"],
-    evolution_stage=(3,3),
-    moves=["Flamethrower", "Fire Blast", "Fly", "Cut"],
-    strengths=["Grass", "Bug", "Steel", "Fire", "Fairy", "Fighting"],
-    weaknesses=["Water", "Electric", "Rock"],
-    immunities=[],
-    imageUrl="https://example.com/charizard.png",
-    legendaryStatus=False
-)
 
-mega_charizard_x = PokemonVariation(
-    name="Mega Charizard X",
-    types=["Fire", "Dragon"],
-    strengths=["Water", "Electric", "Rock", "Steel"],
-    weaknesses=["Ground", "Rock", "Dragon"],
-    immunities=["Electric"],
-    imageUrl="https://example.com/mega_charizard_x.png"
-)
-
-charizard.add_variation(mega_charizard_x)
+TYPE_EFFECTIVENESS_CHART = {
+    'Normal': {'Rock': 0.5, 'Ghost': 0, 'Steel': 0.5},
+    'Fire': {'Fire': 0.5, 'Water': 0.5, 'Grass': 2, 'Ice': 2, 'Bug': 2, 'Rock': 0.5, 'Dragon': 0.5, 'Steel': 2},
+    'Water': {'Fire': 2, 'Water': 0.5, 'Grass': 0.5, 'Ground': 2, 'Rock': 2, 'Dragon': 0.5},
+    'Electric': {'Water': 2, 'Electric': 0.5, 'Grass': 0.5, 'Ground': 0, 'Flying': 2, 'Dragon': 0.5},
+    'Grass': {'Fire': 0.5, 'Water': 2, 'Grass': 0.5, 'Poison': 0.5, 'Ground': 2, 'Flying': 0.5, 'Bug': 0.5, 'Rock': 2, 'Dragon': 0.5, 'Steel': 0.5},
+    'Ice': {'Fire': 0.5, 'Water': 0.5, 'Grass': 2, 'Ice': 0.5, 'Ground': 2, 'Flying': 2, 'Dragon': 2, 'Steel': 0.5},
+    'Fighting': {'Normal': 2, 'Ice': 2, 'Poison': 0.5, 'Flying': 0.5, 'Psychic': 0.5, 'Bug': 0.5, 'Rock': 2, 'Ghost': 0, 'Dark': 2, 'Steel': 2, 'Fairy': 0.5},
+    'Poison': {'Grass': 2, 'Poison': 0.5, 'Ground': 0.5, 'Rock': 0.5, 'Ghost': 0.5, 'Steel': 0, 'Fairy': 2},
+    'Ground': {'Fire': 2, 'Electric': 2, 'Grass': 0.5, 'Poison': 2, 'Flying': 0, 'Bug': 0.5, 'Rock': 2, 'Steel': 2},
+    'Flying': {'Electric': 0.5, 'Grass': 2, 'Fighting': 2, 'Bug': 2, 'Rock': 0.5, 'Steel': 0.5},
+    'Psychic': {'Fighting': 2, 'Poison': 2, 'Psychic': 0.5, 'Dark': 0, 'Steel': 0.5},
+    'Bug': {'Fire': 0.5, 'Grass': 2, 'Fighting': 0.5, 'Poison': 0.5, 'Flying': 0.5, 'Psychic': 2, 'Ghost': 0.5, 'Dark': 2, 'Steel': 0.5, 'Fairy': 0.5},
+    'Rock': {'Fire': 2, 'Ice': 2, 'Fighting': 0.5, 'Ground': 0.5, 'Flying': 2, 'Bug': 2, 'Steel': 0.5},
+    'Ghost': {'Normal': 0, 'Psychic': 2, 'Ghost': 2, 'Dark': 0.5},
+    'Dragon': {'Dragon': 2, 'Steel': 0.5, 'Fairy': 0},
+    'Dark': {'Fighting': 0.5, 'Psychic': 2, 'Ghost': 2, 'Dark': 0.5, 'Fairy': 0.5},
+    'Steel': {'Fire': 0.5, 'Water': 0.5, 'Electric': 0.5, 'Ice': 2, 'Rock': 2, 'Steel': 0.5, 'Fairy': 2},
+    'Fairy': {'Fire': 0.5, 'Fighting': 2, 'Poison': 0.5, 'Dragon': 2, 'Dark': 2, 'Steel': 0.5}   
+}

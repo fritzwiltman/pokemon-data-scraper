@@ -2,6 +2,7 @@ import re, requests, json
 from bs4 import BeautifulSoup
 from pokemon import Pokemon, PokemonVariation
 from pokemon import LEGENDARY_AND_MYTHICAL_POKEMON
+from pokemon import TYPE_EFFECTIVENESS_CHART
 
 POKEDEX_URL = 'https://pokemondb.net/pokedex/all'
 POKEMON_DETAILS_URL = 'https://pokemondb.net/pokedex/'
@@ -145,9 +146,8 @@ def create_pokemon(pokedex_number, name, types):
     # Get pokemon legendary status
     legendary_status = name in LEGENDARY_AND_MYTHICAL_POKEMON
 
-    # Calculate type weaknesses, strengths, and immunities
-    # (strengths, weaknesses, immunities) = calculate_type_advantages(types)
-    
+    # Calculate type weaknesses, resistances, and immunities
+    (resistances, weaknesses, immunities) = calculate_type_effectiveness(types)
 
     # Create pokemon object with the scraped data
     pokemon = Pokemon(
@@ -159,9 +159,9 @@ def create_pokemon(pokedex_number, name, types):
         category=category,
         abilities=abilities,
         moves=moves,
-        strengths=[],
-        weaknesses=[],
-        immunities=[],
+        resistances=resistances,
+        weaknesses=weaknesses,
+        immunities=immunities,
         evolution_stage=evolution_stage,
         imageUrl=image_url,
         legendaryStatus=legendary_status
@@ -225,8 +225,24 @@ def calculate_evolution_stage(soup, name):
     return None, None
 
 
-def calculate_type_advantages(types):
-    pass
+def calculate_type_effectiveness(types):
+    resistances = []
+    weaknesses = []
+    immunities = []
+
+    for attacking_type in TYPE_EFFECTIVENESS_CHART:
+        effectiveness = 1  # Default effectiveness
+        for pokemon_type in types:
+            effectiveness *= TYPE_EFFECTIVENESS_CHART[attacking_type].get(pokemon_type, 1)
+        
+        if effectiveness > 1:
+            weaknesses.append(attacking_type)
+        elif effectiveness < 1 and effectiveness > 0:
+            resistances.append(attacking_type)
+        elif effectiveness == 0:
+            immunities.append(attacking_type)
+
+    return resistances, weaknesses, immunities
 
 
 def create_pokemon_variation(unparsed_name, types):
@@ -299,7 +315,7 @@ def create_pokemon_variation(unparsed_name, types):
     variation = PokemonVariation(
         name=variation_name,
         types=types,
-        strengths=[],
+        resistances=[],
         weaknesses=[],
         immunities=[],
         imageUrl=""
