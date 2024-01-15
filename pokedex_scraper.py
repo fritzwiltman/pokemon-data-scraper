@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 from pokemon import Pokemon, PokemonVariation
 from pokemon import LEGENDARY_AND_MYTHICAL_POKEMON
 
-
 POKEDEX_URL = 'https://pokemondb.net/pokedex/all'
 POKEMON_DETAILS_URL = 'https://pokemondb.net/pokedex/'
 
@@ -24,7 +23,7 @@ def scrape_pokemon_data():
 
         if existing_pokemon:
             variation = create_pokemon_variation(unparsed_name, types)
-            print("pokemon: " + existing_pokemon.name)
+            # print("pokemon: " + existing_pokemon.name)
             existing_pokemon.add_variation(variation)
         else:
             pokemon = create_pokemon(pokedex_number, unparsed_name, types)
@@ -34,25 +33,220 @@ def scrape_pokemon_data():
 
 
 def create_pokemon(pokedex_number, name, types):
-    print("pokemon: " + name)
-    response = requests.get(POKEMON_DETAILS_URL + name)
+    print(str(pokedex_number) + ". " + name)
+    if "Nidoran" in name:
+        if "♀" in name:
+            response = requests.get(POKEMON_DETAILS_URL + "nidoran-f")
+        else:
+            response = requests.get(POKEMON_DETAILS_URL + "nidoran-m")
+    elif "Male" in name:
+        response = requests.get(POKEMON_DETAILS_URL + name.split()[0])
+    elif "'" in name:
+        response = requests.get(POKEMON_DETAILS_URL + name.replace("'", ""))
+    elif "." in name:
+        response = requests.get(POKEMON_DETAILS_URL + name.replace(".", "").replace(" ", "-"))
+    elif ":" in name:
+        response = requests.get(POKEMON_DETAILS_URL + name.replace(":", "").replace(" ", "-"))
+    elif "é" in name:
+        response = requests.get(POKEMON_DETAILS_URL + name.replace("é", "e"))
+    elif "Deoxys" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "deoxys")
+    elif "Burmy" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "burmy")
+    elif "Wormadam" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "wormadam")
+    elif "Giratina" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "giratina")
+    elif "Shaymin" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "shaymin")
+    elif "Basculin" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "basculin")
+    elif "Darmanitan" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "darmanitan")
+    elif "Tornadus" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "tornadus")
+    elif "Thundurus" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "thundurus")
+    elif "Landorus" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "landorus")
+    elif "Keldeo" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "keldeo")
+    elif "Meloetta" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "meloetta")
+    elif "Aegislash" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "aegislash")
+    elif "Pumpkaboo" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "pumpkaboo")
+    elif "Gourgeist" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "gourgeist")
+    elif "Zygarde" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "zygarde")
+    elif "Hoopa" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "hoopa")
+    elif "Oricorio" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "oricorio")
+    elif "Lycanroc" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "lycanroc")
+    elif "Wishiwashi" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "wishiwashi")
+    elif "Minior" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "minior")
+    elif "Toxtricity" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "toxtricity")
+    elif "Eiscue" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "eiscue")
+    elif "Morpeko" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "morpeko")
+    elif "Zacian" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "zacian")
+    elif "Zamazenta" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "zamazenta")
+    elif "Urshifu" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "urshifu")
+    elif "Enamorus" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "enamorus")
+    elif "Meowstic" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "meowstic")
+    elif "Family" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "Maushold")
+    elif "Plumage" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "squawkabilly")
+    elif "Palafin" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "palafin")
+    elif "Tatsugiri" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "tatsugiri")
+    elif "Dudunsparce" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "dudunsparce")
+    elif "Gimmighoul" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "gimmighoul")
+    elif "Ogerpon" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "ogerpon")
+    elif "Terapagos" in name:
+        response = requests.get(POKEMON_DETAILS_URL + "terapagos")
+    elif " " in name:
+        response = requests.get(POKEMON_DETAILS_URL + name.replace(" ", "-"))
+    else:
+        response = requests.get(POKEMON_DETAILS_URL + name)
+    
     soup = BeautifulSoup(response.text, 'html.parser')
 
     # Get pokemon image url
-    image_url = soup.find('a', attrs={'data-title': f'{name} official artwork'}).find('img')['src']
+    if "Nidoran" in name:
+        if "♀" in name:
+            image_url = "https://img.pokemondb.net/artwork/nidoran-f.jpg"
+        else:
+            image_url = "https://img.pokemondb.net/artwork/nidoran-m.jpg"
+    elif "Male" in name:
+        name_split = name.split()
+        data_title = f"{name_split[0]}-{name_split[1]}"
+        a_tag = soup.find("a", {"data-title": data_title})
+        if a_tag:
+            image_url = image.find('img')['src']
+        else:
+            image_url = None
+    elif "Deoxys" in name:
+        image_url = "https://img.pokemondb.net/artwork/deoxys-normal.jpg"
+    elif "Burmy" in name:
+        image_url = "https://img.pokemondb.net/artwork/burmy-plant.jpg"
+    elif "Wormadam" in name:
+        image_url = "https://img.pokemondb.net/artwork/wormadam-plant.jpg"
+    elif "Giratina" in name:
+        image_url = "https://img.pokemondb.net/artwork/giratina-altered.jpg"
+    elif "Shaymin" in name:
+        image_url = "https://img.pokemondb.net/artwork/shaymin-land.jpg"
+    elif "Basculin" in name:
+        image_url = "https://img.pokemondb.net/artwork/basculin-blue-striped.jpg"
+    elif "Darmanitan" in name:
+        image_url = "https://img.pokemondb.net/artwork/darmanitan-standard.jpg"
+    elif "Tornadus" in name:
+        image_url = "https://img.pokemondb.net/artwork/tornadus-incarnate.jpg"
+    elif "Thundurus" in name:
+        image_url = "https://img.pokemondb.net/artwork/thundurus-incarnate.jpg"
+    elif "Landorus" in name:
+        image_url = "https://img.pokemondb.net/artwork/landorus-incarnate.jpg"
+    elif "Keldeo" in name:
+        image_url = "https://img.pokemondb.net/artwork/keldeo-ordinary.jpg"
+    elif "Meloetta" in name:
+        image_url = "https://img.pokemondb.net/artwork/meloetta-aria.jpg"
+    elif "Aegislash" in name:
+        image_url = "https://img.pokemondb.net/artwork/aegislash-shield.jpg"
+    elif "Pumpkaboo" in name:
+        image_url = "https://img.pokemondb.net/artwork/pumpkaboo-average.jpg"
+    elif "Gourgeist" in name:
+        image_url = "https://img.pokemondb.net/artwork/gourgeist-average.jpg"
+    elif "Zygarde" in name:
+        image_url = "https://img.pokemondb.net/artwork/zygarde-50.jpg"
+    elif "Hoopa" in name:
+        image_url = "https://img.pokemondb.net/artwork/hoopa-confined.jpg"
+    elif "Oricorio" in name:
+        image_url = "https://img.pokemondb.net/artwork/oricorio-baile.jpg"
+    elif "Lycanroc" in name:
+        image_url = "https://img.pokemondb.net/artwork/lycanroc-midday.jpg"
+    elif "Wishiwashi" in name:
+        image_url = "https://img.pokemondb.net/artwork/wishiwashi-solo.jpg"
+    elif "Minior" in name:
+        image_url = "https://img.pokemondb.net/artwork/minior-red-meteor.jpg"
+    elif "Toxtricity" in name:
+        image_url = "https://img.pokemondb.net/artwork/toxtricity-amped.jpg"
+    elif "Eiscue" in name:
+        image_url = "https://img.pokemondb.net/artwork/eiscue-ice.jpg"
+    elif "Indeedee" in name:
+        image_url = "https://img.pokemondb.net/artwork/indeedee-male.jpg"
+    elif "Morpeko" in name:
+        image_url = "https://img.pokemondb.net/artwork/morpeko-full-belly.jpg"
+    elif "Zacian" in name:
+        image_url = "https://img.pokemondb.net/artwork/zacian-hero.jpg"
+    elif "Zamazenta" in name:
+        image_url = "https://img.pokemondb.net/artwork/zamazenta-hero.jpg"
+    elif "Urshifu" in name:
+        image_url = "https://img.pokemondb.net/artwork/urshifu-single-strike.jpg"
+    elif "Enamorus" in name:
+        image_url = "https://img.pokemondb.net/artwork/enamorus-incarnate.jpg"
+    elif "é" in name:
+        image_url = "https://img.pokemondb.net/artwork/flabebe.jpg"
+    elif "Meowstic" in name:
+        image_url = "https://img.pokemondb.net/artwork/meowstic-male.jpg"
+    elif "Family" in name:
+        image_url = "https://img.pokemondb.net/artwork/maushold.jpg"
+    elif "Plumage" in name:
+        image_url = "https://img.pokemondb.net/artwork/squawkabilly.jpg"
+    elif "Palafin" in name:
+        image_url = "https://img.pokemondb.net/artwork/palafin.jpg"
+    elif "Tatsugiri" in name:
+        image_url = "https://img.pokemondb.net/artwork/tatsugiri.jpg"
+    elif "Dudunsparce" in name:
+        image_url = "https://img.pokemondb.net/artwork/dudunsparce.jpg"
+    elif "Gimmighoul" in name:
+        image_url = "https://img.pokemondb.net/artwork/gimmighoul.jpg"
+    elif "Ogerpon" in name:
+        image_url = "https://img.pokemondb.net/artwork/ogerpon.jpg"
+    elif "Terapagos" in name:
+        image_url = "https://img.pokemondb.net/artwork/terapagos.jpg"
+    elif "Sinistcha" in name:
+        image_url = "https://img.pokemondb.net/artwork/sinistcha.jpg"
+    elif "Hydrapple" in name:
+        image_url = "https://img.pokemondb.net/artwork/hydrapple.jpg"
+    elif "Gouging Fire" in name:
+        image_url = "https://img.pokemondb.net/artwork/gouging-fire.jpg"
+    elif "Iron Boulder" in name:
+        image_url = "https://img.pokemondb.net/artwork/iron-boulder.jpg"
+    elif "Iron Crown" in name:
+        image_url = "https://img.pokemondb.net/artwork/iron-crown.jpg"
+    else:
+        image = soup.find('a', attrs={'data-title': f'{name} official artwork'})
+        image_url = image.find('img')['src']
 
     # Get pokemon height and weight
     vitals_table = soup.find('table', class_='vitals-table')
-
     height_row = vitals_table.find('th', string='Height')
     if height_row:
-        height = height_row.find_next_sibling('td').string.strip().split('m')[0]
+        height = height_row.find_next_sibling('td').string.strip().split('m')[0].strip()
     else:
         height = None
 
     weight_row = vitals_table.find('th', string='Weight')
     if weight_row:
-        weight = weight_row.find_next_sibling('td').string.strip().split('kg')[0]
+        weight = weight_row.find_next_sibling('td').string.strip().split('kg')[0].strip()
     else:
         weight = None
 
@@ -80,6 +274,10 @@ def create_pokemon(pokedex_number, name, types):
     # Get pokemon legendary status
     legendary_status = name in LEGENDARY_AND_MYTHICAL_POKEMON
 
+    # Calculate type weaknesses, strengths, and immunities
+    # (strengths, weaknesses, immunities) = calculate_type_advantages(types)
+    
+
     # Create pokemon object with the scraped data
     pokemon = Pokemon(
         id=pokedex_number,
@@ -90,6 +288,9 @@ def create_pokemon(pokedex_number, name, types):
         category=category,
         abilities=abilities,
         moves=moves,
+        strengths=[],
+        weaknesses=[],
+        immunities=[],
         evolution_stage=evolution_stage,
         imageUrl=image_url,
         legendaryStatus=legendary_status
@@ -143,13 +344,14 @@ def calculate_evolution_stage(soup, name):
         evolution_stages = evolution_chart.find_all('a', class_='ent-name')
         if evolution_stages:
             stage_counter = 1
+            total_evolutions = len(evolution_stages)
             for evolution in evolution_stages:
                 pokemon_name = evolution.string.strip()
                 if pokemon_name == name:
-                    return stage_counter
+                    return stage_counter, total_evolutions
                 stage_counter += 1
 
-    return None
+    return None, None
 
 
 def create_pokemon_variation(unparsed_name, types):
@@ -184,7 +386,7 @@ def create_pokemon_variation(unparsed_name, types):
             variation_name = "Tauros Aqua Breed"
     
     elif "Partner" in unparsed_name:
-        return None
+        variation_name = "Partner Pikachu"
 
     # Case for Mega 
     elif "Mega" in unparsed_name and unparsed_name != "Meganium":
@@ -205,10 +407,29 @@ def create_pokemon_variation(unparsed_name, types):
     elif "Galarian" in unparsed_name:
         unparsed_variation_name = unparsed_name.split(" Galarian ", 1)
         variation_name = 'Galarian' + unparsed_variation_name[1]
+
+    # Case for Hisuian
+    elif "Hisuian" in unparsed_name:
+        unparsed_variation_name = unparsed_name.split(" Hisuian ", 1)
+        variation_name = 'Hisuian' + unparsed_variation_name[1]
+
+    # Case for Rotom types: Heat, Wash, Frost, Fan, Mow
+    elif "Rotom" in unparsed_name:
+        variation_name = unparsed_name.split("Rotom", 1)[1].strip()
+        
+
+    # Case for Castform, Kyogre/Groudon, Deoxys, Burmy, Wormadam, Dialga/Palkia/Giratina, Shaymin, Tornadus, Thundurus, Landorous, Enamorous
+    elif "Castform" or "Primal" or "Forme" or "Cloak" or "Keldeo" or "Calyrex" or "Palafin" or "Tatsugiri" or "Dudunsparce" or "Gimmighoul" or "Ogerpon" or "Terapagos" in unparsed_name:
+        variation_name = unparsed_name
+    
+
     
     variation = PokemonVariation(
         name=variation_name,
         types=types,
+        strengths=[],
+        weaknesses=[],
+        immunities=[],
         imageUrl=""
     )
 
@@ -219,13 +440,22 @@ def main():
     pokemon_list = scrape_pokemon_data()
 
     # Print the first 5 pokemon
-    for pokemon in pokemon_list[:5]:
+    for pokemon in pokemon_list[:6]:
         print(pokemon.name)
         print(pokemon.types)
         print(pokemon.variations)
         print()
     
-    pokemon_data = [pokemon.to_dict() for pokemon in pokemon_list]
+    # pokemon_data = [pokemon.to_dict() for pokemon in pokemon_list]
+    pokemon_data = []
+    for pokemon in pokemon_list:
+        print("pokemon: " + pokemon.name)
+        if pokemon.variations is None:
+            pokemon.variations = []
+        else: 
+            for variation in pokemon.variations:
+                print("variation: " + variation.name)
+        pokemon_data.append(pokemon.to_dict())
 
     # Serialize to JSON and write to a file
     with open('pokemon_data.json', 'w', encoding='utf-8') as f:

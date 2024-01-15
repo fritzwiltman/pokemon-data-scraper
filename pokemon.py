@@ -10,20 +10,26 @@ class Stats:
 """
 
 class PokemonVariation:
-    def __init__(self, name, types, imageUrl):
+    def __init__(self, name, types, strengths, weaknesses, immunities, imageUrl):
         self.name = name
         self.types = types
+        self.strengths = strengths
+        self.weaknesses = weaknesses
+        self.immunities = immunities
         self.imageUrl = imageUrl
 
     def to_dict(self):
         return {
             'name': self.name,
             'types': self.types,
+            'strengths': self.strengths,
+            'weaknesses': self.weaknesses,
+            'immunities': self.immunities,
             'imageUrl': self.imageUrl
         }
 
 class Pokemon:
-    def __init__(self, id, name, types, height, weight, category, abilities, moves, evolution_stage, imageUrl, legendaryStatus):
+    def __init__(self, id, name, types, height, weight, category, abilities, moves, strengths, weaknesses, immunities, evolution_stage, imageUrl, legendaryStatus):
         self.id = id
         self.name = name
         self.types = types
@@ -32,6 +38,9 @@ class Pokemon:
         self.category = category
         self.abilities = abilities
         self.moves = moves
+        self.strengths = strengths
+        self.weaknesses = weaknesses
+        self.immunities = immunities
         self.evolution_stage = evolution_stage # 1, 2, 3, or None to denote no evolution
         self.imageUrl = imageUrl
         self.legendaryStatus = legendaryStatus
@@ -50,6 +59,9 @@ class Pokemon:
             'category': self.category,
             'abilities': self.abilities,
             'moves': self.moves,
+            'strengths': self.strengths,
+            'weaknesses': self.weaknesses,
+            'immunities': self.immunities,
             'evolutionStage': self.evolution_stage,
             'imageUrl': self.imageUrl,
             'legendaryStatus': self.legendaryStatus,
@@ -108,8 +120,11 @@ charizard = Pokemon(
     weight="90.5 kg",
     category="Flame Pokémon",
     abilities=["Blaze"],
-    evolution_stage=3,
+    evolution_stage=(3,3),
     moves=["Flamethrower", "Fire Blast", "Fly", "Cut"],
+    strengths=["Grass", "Bug", "Steel", "Fire", "Fairy", "Fighting"],
+    weaknesses=["Water", "Electric", "Rock"],
+    immunities=[],
     imageUrl="https://example.com/charizard.png",
     legendaryStatus=False
 )
@@ -117,6 +132,9 @@ charizard = Pokemon(
 mega_charizard_x = PokemonVariation(
     name="Mega Charizard X",
     types=["Fire", "Dragon"],
+    strengths=["Water", "Electric", "Rock", "Steel"],
+    weaknesses=["Ground", "Rock", "Dragon"],
+    immunities=["Electric"],
     imageUrl="https://example.com/mega_charizard_x.png"
 )
 
