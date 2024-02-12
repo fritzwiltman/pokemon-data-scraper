@@ -1,14 +1,3 @@
-"""
-class Stats:
-    def __init__(self, hp, attack, defense, specialAttack, specialDefense, speed):
-        self.hp = hp
-        self.attack = attack
-        self.defense = defense
-        self.specialAttack = specialAttack
-        self.specialDefense = specialDefense
-        self.speed = speed
-"""
-
 class PokemonVariation:
     def __init__(self, name, types, resistances, weaknesses, immunities, imageUrl):
         self.name = name
@@ -29,7 +18,7 @@ class PokemonVariation:
         }
 
 class Pokemon:
-    def __init__(self, id, name, types, height, weight, category, abilities, moves, resistances, weaknesses, immunities, evolution_stage, imageUrl, legendaryStatus):
+    def __init__(self, id, name, types, height, weight, category, abilities, moves, resistances, weaknesses, immunities, evolution_stage, imageUrl, legendaryStatus, generation):
         self.id = id
         self.name = name
         self.types = types
@@ -44,6 +33,7 @@ class Pokemon:
         self.evolution_stage = evolution_stage # 1, 2, 3, or None to denote no evolution
         self.imageUrl = imageUrl
         self.legendaryStatus = legendaryStatus
+        self.generation = generation
         self.variations = []
 
     def add_variation(self, variation):
@@ -65,11 +55,12 @@ class Pokemon:
             'evolutionStage': self.evolution_stage,
             'imageUrl': self.imageUrl,
             'legendaryStatus': self.legendaryStatus,
+            'generation': self.generation,
             'variations': [variation.to_dict() for variation in self.variations]
         }
 
 LEGENDARY_AND_MYTHICAL_POKEMON = [
-     "Articuno", "Zapdos", "Moltres",
+    "Articuno", "Zapdos", "Moltres",
     "Mewtwo",
     "Raikou", "Entei", "Suicune",
     "Lugia", "Ho-Oh",
