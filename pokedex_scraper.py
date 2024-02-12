@@ -164,7 +164,8 @@ def create_pokemon(pokedex_number, name, types):
         immunities=immunities,
         evolution_stage=evolution_stage,
         imageUrl=image_url,
-        legendaryStatus=legendary_status
+        legendaryStatus=legendary_status,
+        generation=None
     )
 
     return pokemon
@@ -327,14 +328,51 @@ def create_pokemon_variation(unparsed_name, types):
     return variation
 
 
+def gather_pokemon_generation_data(pokemon_data):
+    response = requests.get('https://en.wikipedia.org/wiki/List_of_Pokémon')
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    pokemon_by_generation = {"Generation I": [], "Generation II": [], "Generation III": [], "Generation IV": [], "Generation V": [], "Generation VI": [],"Generation VII": [], "Generation VIII": [], "Generation IX": []}
+
+    # 3rd table on the site is the List of Pokémon species names by generation
+    pokemon_generations_table = soup.find_all('table', {'class': 'wikitable'})[2]
+
+    if pokemon_generations_table:
+        counter = 0
+        # Iterate through each row in the table
+        for row in pokemon_generations_table.find_all('tr'):
+            counter+=1
+            print("count: " + str(counter))
+            # Find the columns in the row
+            columns = row.find_all('td')
+
+            if len(columns) >= 2:
+                # Get the Pokémon name and generation number
+                name = columns[1].text.strip()
+                pokedex_num = columns[0].text.strip()
+                # Check if the Pokémon name exists in the pokemon_data
+                if name in pokemon_data:
+                    # Add the generation number to the Pokémon's data
+                    pokemon_data[name]['generation'] = pokedex_num
+
+    # go through each sub table for each generation, for each pokemon in the sub table, add the generation number to the pokemon's data
+
+
+    return pokemon_data
+
+
 def main():
-    pokemon_list = scrape_pokemon_data()
+    # pokemon_list = scrape_pokemon_data()
     
-    pokemon_data = [pokemon.to_dict() for pokemon in pokemon_list]
+    # pokemon_data = [pokemon.to_dict() for pokemon in pokemon_list]
+    with open('pokemon_data.json', 'r', encoding='utf-8') as f:
+        pokemon_data = json.load(f)
+        pokemon_data = gather_pokemon_generation_data(pokemon_data)
+
 
     # Serialize to JSON and write to a file
-    with open('pokemon_data.json', 'w', encoding='utf-8') as f:
-        json.dump(pokemon_data, f, ensure_ascii=False, indent=4)
+    # with open('pokemon_data.json', 'w', encoding='utf-8') as f:
+    #     json.dump(pokemon_data, f, ensure_ascii=False, indent=4)
 
 
 if __name__ == "__main__":
