@@ -207,41 +207,6 @@ def get_moves_data(soup):
 
     print(moves_set)
     return list(moves_set)
-    moves_data = {}
-
-    # Moves learnt by level up
-    level_up_moves_table = soup.find('h3', string='Moves learnt by level up').find_next('table', class_='data-table')
-    if level_up_moves_table:
-        level_up_moves = [move.string.strip() for move in level_up_moves_table.find_all('a', class_='ent-name')]
-        moves_data['level_up_moves'] = level_up_moves
-
-    # Moves learnt by TM
-    tm_moves_table = soup.find('h3', string='Moves learnt by TM').find_next('table', class_='data-table')
-    if tm_moves_table:
-        tm_moves = [move.string.strip() for move in tm_moves_table.find_all('a', class_='ent-name')]
-        moves_data['tm_moves'] = tm_moves
-    
-    # Egg moves
-    egg_moves_table = soup.find('h3', string='Egg moves').find_next('table', class_='data-table')
-    if egg_moves_table:
-        egg_moves = [move.string.strip() for move in egg_moves_table.find_all('a', class_='ent-name')]
-        moves_data['egg_moves'] = egg_moves
-
-    # Moves learnt on evolution
-    evolution_moves_title = soup.find('h3', string='Moves learnt on evolution')
-    if evolution_moves_title:
-        evolution_moves_table = evolution_moves_title.find_next('table', class_='data-table') 
-        evolution_moves = [move.string.strip() for move in evolution_moves_table.find_all('a', class_='ent-name')]
-        moves_data['evolution_moves'] = evolution_moves
-
-    # Moves learned by Tutor
-    evolution_moves_title = soup.find('h3', string='Moves Tutor moves')
-    if evolution_moves_title:
-        evolution_moves_table = evolution_moves_title.find_next('table', class_='data-table')
-        evolution_moves = [move.string.strip() for move in evolution_moves_table.find_all('a', class_='ent-name')]
-        moves_data['evolution_moves'] = evolution_moves
-
-    return moves_data
     
 
 def calculate_evolution_stage(soup, name):
