@@ -69,7 +69,7 @@ class Pokemon:
         }
 
 LEGENDARY_AND_MYTHICAL_POKEMON = [
-     "Articuno", "Zapdos", "Moltres",
+    "Articuno", "Zapdos", "Moltres",
     "Mewtwo",
     "Raikou", "Entei", "Suicune",
     "Lugia", "Ho-Oh",
