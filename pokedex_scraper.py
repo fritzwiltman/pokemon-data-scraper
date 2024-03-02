@@ -19,94 +19,85 @@ def scrape_pokemon_data():
         unparsed_name = columns[1].text.strip()
         type_tags = columns[2].find_all('a')
         types = [type_tag.text for type_tag in type_tags]
+        image_url = columns[0].find('img')['src']
 
         existing_pokemon = next((existing_pokemon for existing_pokemon in pokemon_list if existing_pokemon.id == pokedex_number), None)
 
         if existing_pokemon:
-            variation = create_pokemon_variation(unparsed_name, types)
-            # print("pokemon: " + existing_pokemon.name)
+            variation = create_pokemon_variation(unparsed_name, types, image_url)
             existing_pokemon.add_variation(variation)
         else:
-            pokemon = create_pokemon(pokedex_number, unparsed_name, types)
+            pokemon = create_pokemon(pokedex_number, unparsed_name, types, image_url)
             pokemon_list.append(pokemon)
 
     return pokemon_list
 
 
-def create_pokemon(pokedex_number, name, types):
+def create_pokemon(pokedex_number, name, types, image_url):
     print(str(pokedex_number) + ". " + name)
-
+    
     special_cases = {
-        "Nidoran♀": ("nidoran-f", "https://img.pokemondb.net/artwork/nidoran-f.jpg"),
-        "Nidoran♂": ("nidoran-m", "https://img.pokemondb.net/artwork/nidoran-m.jpg"),
-        "Deoxys": ("deoxys", "https://img.pokemondb.net/artwork/deoxys-normal.jpg"),
-        "Burmy": ("burmy", "https://img.pokemondb.net/artwork/burmy-plant.jpg"),
-        "Wormadam": ("wormadam", "https://img.pokemondb.net/artwork/wormadam-plant.jpg"),
-        "Giratina": ("giratina", "https://img.pokemondb.net/artwork/giratina-altered.jpg"),
-        "Shaymin": ("shaymin", "https://img.pokemondb.net/artwork/shaymin-land.jpg"),
-        "Basculin": ("basculin", "https://img.pokemondb.net/artwork/basculin-blue-striped.jpg"),
-        "Darmanitan": ("darmanitan", "https://img.pokemondb.net/artwork/darmanitan-standard.jpg"),
-        "Tornadus": ("tornadus", "https://img.pokemondb.net/artwork/tornadus-incarnate.jpg"),
-        "Thundurus": ("thundurus", "https://img.pokemondb.net/artwork/thundurus-incarnate.jpg"),
-        "Landorus": ("landorus", "https://img.pokemondb.net/artwork/landorus-incarnate.jpg"),
-        "Keldeo": ("keldeo", "https://img.pokemondb.net/artwork/keldeo-ordinary.jpg"),
-        "Meloetta": ("meloetta", "https://img.pokemondb.net/artwork/meloetta-aria.jpg"),
-        "Aegislash": ("aegislash", "https://img.pokemondb.net/artwork/aegislash-shield.jpg"),
-        "Pumpkaboo": ("pumpkaboo", "https://img.pokemondb.net/artwork/pumpkaboo-average.jpg"),
-        "Gourgeist": ("gourgeist", "https://img.pokemondb.net/artwork/gourgeist-average.jpg"),
-        "Zygarde": ("zygarde", "https://img.pokemondb.net/artwork/zygarde-50.jpg"),
-        "Hoopa": ("hoopa", "https://img.pokemondb.net/artwork/hoopa-confined.jpg"),
-        "Oricorio": ("oricorio", "https://img.pokemondb.net/artwork/oricorio-baile.jpg"),
-        "Lycanroc": ("lycanroc", "https://img.pokemondb.net/artwork/lycanroc-midday.jpg"),
-        "Wishiwashi": ("wishiwashi", "https://img.pokemondb.net/artwork/wishiwashi-solo.jpg"),
-        "Minior": ("minior", "https://img.pokemondb.net/artwork/minior-red-meteor.jpg"),
-        "Toxtricity": ("toxtricity", "https://img.pokemondb.net/artwork/toxtricity-amped.jpg"),
-        "Eiscue": ("eiscue", "https://img.pokemondb.net/artwork/eiscue-ice.jpg"),
-        "Indeedee": ("indeedee", "https://img.pokemondb.net/artwork/indeedee-male.jpg"),
-        "Morpeko": ("morpeko", "https://img.pokemondb.net/artwork/morpeko-full-belly.jpg"),
-        "Zacian": ("zacian", "https://img.pokemondb.net/artwork/zacian-hero.jpg"),
-        "Zamazenta": ("zamazenta", "https://img.pokemondb.net/artwork/zamazenta-hero.jpg"),
-        "Urshifu": ("urshifu", "https://img.pokemondb.net/artwork/urshifu-single-strike.jpg"),
-        "Enamorus": ("enamorus", "https://img.pokemondb.net/artwork/enamorus-incarnate.jpg"),
-        "Farfetch'd": ("farfetchd", "https://img.pokemondb.net/artwork/farfetchd.jpg"),
-        "Sirfetch'd": ("sirfetchd", "https://img.pokemondb.net/artwork/sirfetchd.jpg"),
-        "Mr. Mime": ("mr-mime", "https://img.pokemondb.net/artwork/mr-mime.jpg"),
-        "Mime Jr.": ("mime-jr", "https://img.pokemondb.net/artwork/mime-jr.jpg"),
-        "Mr. Rime": ("mr-rime", "https://img.pokemondb.net/artwork/mr-rime.jpg"),
-        "Flabébé": ("flabebe", "https://img.pokemondb.net/artwork/flabebe.jpg"),
-        "Type: Null": ("type-null", "https://img.pokemondb.net/artwork/type-null.jpg"),
-        "Maushold": ("maushold", "https://img.pokemondb.net/artwork/maushold.jpg"),
-        "Squawkabilly": ("squawkabilly", "https://img.pokemondb.net/artwork/squawkabilly.jpg"),
-        "Palafin": ("palafin", "https://img.pokemondb.net/artwork/palafin.jpg"),
-        "Tatsugiri": ("tatsugiri", "https://img.pokemondb.net/artwork/tatsugiri.jpg"),
-        "Dudunsparce": ("dudunsparce", "https://img.pokemondb.net/artwork/dudunsparce.jpg"),
-        "Gimmighoul": ("gimmighoul", "https://img.pokemondb.net/artwork/gimmighoul.jpg"),
-        "Ogerpon": ("ogerpon", "https://img.pokemondb.net/artwork/ogerpon.jpg"),
-        "Terapagos": ("terapagos", "https://img.pokemondb.net/artwork/terapagos.jpg"),
-        "Male": (name.split(" Male")[0], None)
+        "Nidoran♀": "nidoran-f",
+        "Nidoran♂": "nidoran-m",
+        "Deoxys": "deoxys",
+        "Burmy": "burmy",
+        "Wormadam": "wormadam",
+        "Giratina": "giratina",
+        "Shaymin": "shaymin",
+        "Basculin": "basculin",
+        "Darmanitan": "darmanitan",
+        "Tornadus": "tornadus",
+        "Thundurus": "thundurus",
+        "Landorus": "landorus",
+        "Keldeo": "keldeo",
+        "Meloetta": "meloetta",
+        "Aegislash": "aegislash",
+        "Pumpkaboo": "pumpkaboo",
+        "Gourgeist": "gourgeist",
+        "Zygarde": "zygarde",
+        "Hoopa": "hoopa",
+        "Oricorio": "oricorio",
+        "Lycanroc": "lycanroc",
+        "Wishiwashi": "wishiwashi",
+        "Minior": "minior",
+        "Toxtricity": "toxtricity",
+        "Eiscue": "eiscue",
+        "Indeedee": "indeedee",
+        "Morpeko": "morpeko",
+        "Zacian": "zacian",
+        "Zamazenta": "zamazenta",
+        "Urshifu": "urshifu",
+        "Enamorus": "enamorus",
+        "Farfetch'd": "farfetchd",
+        "Sirfetch'd": "sirfetchd",
+        "Mr. Mime": "mr-mime",
+        "Mime Jr.": "mime-jr",
+        "Mr. Rime": "mr-rime",
+        "Flabébé": "flabebe",
+        "Type: Null": "type-null",
+        "Maushold": "maushold",
+        "Squawkabilly": "squawkabilly",
+        "Palafin": "palafin",
+        "Tatsugiri": "tatsugiri",
+        "Dudunsparce": "dudunsparce",
+        "Gimmighoul": "gimmighoul",
+        "Ogerpon": "ogerpon",
+        "Terapagos": "terapagos",
+        "Male": name.split(" Male")[0]
     }
 
-    for case, (url_name, image_url) in special_cases.items():
+    for case, url_name in special_cases.items():
         if case in name:
             if callable(url_name):
                 url_name = url_name(name)
+            print(name + ", " + str(url_name))
             response = requests.get(POKEMON_DETAILS_URL + url_name)
             break
     else:
         url_name = re.sub('[.:\' ]', '-', name)
         response = requests.get(POKEMON_DETAILS_URL + url_name)
-
+        
     soup = BeautifulSoup(response.text, 'html.parser')
-
-    for case, (url_name, image_url) in special_cases.items():
-        if case in name:
-            image_url = image_url
-            break
-
-    if image_url is None:
-        image = soup.find('a', attrs={'data-title': f'{name} official artwork'})
-        if image:
-            image_url = image.find('img')['src']
 
     # Get pokemon height and weight
     vitals_table = soup.find('table', class_='vitals-table')
@@ -205,7 +196,6 @@ def get_moves_data(soup):
         evolution_moves = [move.string.strip() for move in evolution_moves_table.find_all('a', class_='ent-name')]
         moves_set.update(evolution_moves)
 
-    print(moves_set)
     return list(moves_set)
     
 
@@ -246,7 +236,7 @@ def calculate_type_effectiveness(types):
     return resistances, weaknesses, immunities
 
 
-def create_pokemon_variation(unparsed_name, types):
+def create_pokemon_variation(unparsed_name, types, image_url):
     # Case for alternate form: Darmanitan
     if "Darmanitan" in unparsed_name:
         if "Standard" in unparsed_name:
@@ -322,7 +312,7 @@ def create_pokemon_variation(unparsed_name, types):
         resistances=resistances,
         weaknesses=weaknesses,
         immunities=immunities,
-        imageUrl=""
+        imageUrl=image_url
     )
 
     return variation
